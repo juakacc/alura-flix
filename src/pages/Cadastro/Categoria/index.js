@@ -30,9 +30,11 @@ function CadastroCategoria() {
   };
 
   useEffect(() => {
-    const URL = 'http://localhost:8080/categorias';
+    const URL_BACKEND = window.location.hostname.includes('localhost')
+      ? 'http://localhost:8080/categorias'
+      : 'https://juakaflix.herokuapp.com/categorias';
 
-    fetch(URL)
+    fetch(URL_BACKEND)
       .then(async (response) => {
         const responseJson = await response.json();
         setCategorias([

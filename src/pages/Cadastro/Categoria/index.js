@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 
 import PageDefault from '../../../components/PageDefault';
@@ -28,6 +28,18 @@ function CadastroCategoria() {
 
     setValue(name, value);
   };
+
+  useEffect(() => {
+    const URL = 'http://localhost:8080/categorias';
+
+    fetch(URL)
+      .then(async (response) => {
+        const responseJson = await response.json();
+        setCategorias([
+          ...responseJson,
+        ]);
+      });
+  }, []);
 
   return (
     <PageDefault>

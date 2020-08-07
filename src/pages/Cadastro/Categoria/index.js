@@ -4,43 +4,25 @@ import { Link } from 'react-router-dom';
 import PageDefault from '../../../components/PageDefault';
 import FormField from '../../../components/FormField';
 import Button from '../../../components/Button';
+import useForm from '../../../hooks/useForm';
+import config from '../../../config';
 
 function CadastroCategoria() {
+  const [categorias, setCategorias] = useState([]);
+
   const defaultValue = {
     name: '',
     description: '',
     color: '#000',
   };
 
-  const [categorias, setCategorias] = useState([]);
-  const [values, setValues] = useState(defaultValue);
-
-  const setValue = (name, value) => {
-    setValues({
-      ...values,
-      [name]: value,
-    });
-  };
-
-  const handleChange = (e) => {
-    const { value } = e.target;
-    const name = e.target.getAttribute('name') || '';
-
-    setValue(name, value);
-  };
+  const { values, handleChange, cleanForm } = useForm(defaultValue);
 
   useEffect(() => {
-    const URL_BACKEND = window.location.hostname.includes('localhost')
-      ? 'http://localhost:8080/categorias'
-      : 'https://juakaflix.herokuapp.com/categorias';
-
-    fetch(URL_BACKEND)
-      .then(async (response) => {
-        const responseJson = await response.json();
-        setCategorias([
-          ...responseJson,
-        ]);
-      });
+    fetch(`${config.URL_BACKEND}/categorias`).then(async (response) => {
+      const responseJson = await response.json();
+      setCategorias([...responseJson]);
+    });
   }, []);
 
   return (
@@ -54,7 +36,7 @@ function CadastroCategoria() {
         onSubmit={(e) => {
           e.preventDefault();
           setCategorias([...categorias, values]);
-          setValues(defaultValue);
+          cleanForm();
         }}
       >
         <FormField
@@ -86,9 +68,7 @@ function CadastroCategoria() {
 
       <ul>
         {categorias.map((item, index) => (
-          <li key={`${index}-${item.name}`}>
-            {item.name}
-          </li>
+          <li key={`${index}-${item.name}`}>{item.name}</li>
         ))}
       </ul>
 
